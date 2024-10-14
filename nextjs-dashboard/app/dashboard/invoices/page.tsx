@@ -10,13 +10,15 @@ import { fetchInvoicesPages } from "@/app/lib/data";
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: {
-    query?: string;
-    page?: string;
-  };
+  searchParams?: Promise<{ query?: string; page?: string }>;
 }) {
-  const query = searchParams?.query || "";
-  const currentPage = Number(searchParams?.page) || 1;
+  // Await searchParams before accessing
+  const resolvedSearchParams = await searchParams;
+
+  const query = resolvedSearchParams?.query || "";
+  const currentPage = Number(resolvedSearchParams?.page) || 1;
+
+  // Fetch total pages for pagination
   const totalPages = await fetchInvoicesPages(query);
 
   return (
